@@ -30,6 +30,15 @@ icon: 🚄
 - 需要 `flyai-cli` 已安装：`npm i -g @fly-ai/flyai-cli`
 - 验证：`flyai search-train --origin "北京" --destination "上海"` 应返回 JSON
 
+
+## 配置
+
+该工具无需任何 API 密钥即可进行试用。为获得更好的效果，可以访问 https://flyai.open.fliggy.com/ 获取 API 密钥：
+
+```bash
+flyai config set FLYAI_API_KEY "your-key"
+```
+
 ### 故障排查
 
 - 若执行 `flyai search-train` 时报错提示方法找不到，请更新 CLI 版本：
@@ -152,7 +161,7 @@ Step 2: 若直达无票/不满足偏好 → 进入中转流程
       示例："中转方案车程较长，请问坐席有什么偏好？"
       若 preferences.json 已有 seat_class_name，提示确认即可
   2b. 执行中转查询（❗中转接口不支持 --seat-class-name）
-      flyai search-train --origin {出发地} --destination {目的地} --dep-date {日期} --journey-type 2
+      flyai search-train --origin {出发地} --destination {目的地} --dep-date {日期} -dep-hour-start {起始小时}h --dep-hour-end {结束小时}h --journey-type 2
   2c. 若用户偏好卧铺 → 额外查询长途段（必须）
       将所有方案中**耗时最长段**的车次号合并，一次性查询：
       flyai search-train --origin {长段出发站} --destination {长段到达站} --dep-date {日期} --journey-type 1 --transport-no {车次1,车次2,...} --seat-class-name "硬卧"
@@ -247,12 +256,13 @@ Step 4: 方案评估与推荐
 
 #### 方案 A ⭐ — ⏱ 总时长 7h27m | 💰 ¥553起
 
+```markdown
 | 行程段 | 区间 | 车次 | 出发 | 到达 | 耗时 | 坐席 |
 |--------|------|------|------|------|------|------|
 | 第一段 | 北京南→长沙南 | G71 | 08:00 | 11:12 | 3h12m | 二等座 |
 | 🔄 中转 | 长沙南站内换乘 | — | — | — | 等待38min | — |
 | 第二段 | 长沙南→桂林北 | D3965 | 11:50 | 16:05 | 4h15m | 二等座 |
-
+```
 
 > 💡 推荐理由：全程有座，中转时间充足，适合老人出行
 
@@ -262,12 +272,13 @@ Step 4: 方案评估与推荐
 
 展示多个方案对比时使用：
 
-
+```markdown
 | 方案 | 车次 | 出发→到达 | 中转 | 总时长 | 票价 | 推荐 |
 |------|------|-----------|------|--------|------|------|
 | A ⭐ | G71+D3965 | 08:00→16:05 | 经长沙·38min | 7h27m | ¥553起 | 舒适度最佳 [预订]({jumpUrl}) |
 | B | G525+G1545 | 09:15→16:05 | 经武汉·25min | 6h50m | ¥620起 | 时间最优 [预订]({jumpUrl}) |
 | C | Z285 | 20:00→08:00+1 | 直达 | 12h | ¥450起 | 价格最低 [预订]({jumpUrl}) |
+```
 
 ### 输出规范
 
